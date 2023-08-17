@@ -58,21 +58,38 @@ namespace cpm
     void stop()
     {
       run_ = false;
+      // 唤醒一个等待在该条件变量上的线程，让该线程继续执行
       cond_.notify_one();
       {
+        // std::unique_lock 是C++标准库提供的一种互斥锁的封装类。它提供了更灵活的互斥锁操作，比如可以手动地锁定和解锁互斥锁。
+        // 定义 std::unique_lock 对象 l 并传入互斥锁 queue_lock_，可以使用 l 对象来自动管理互斥锁的锁定和解锁。
+        // 当 l 对象超出作用域时，会自动释放互斥锁，从而避免了手动管理互斥锁的麻烦和可能的错误。
+        // 确保在进入互斥区域时只有一个线程能够访问 queue_lock_ 保护的代码块
         std::unique_lock<std::mutex> l(queue_lock_);
         while (!input_queue_.empty())
         {
+          // input_queue_ 是一个队列，通过调用 front() 方法可以获取队列的第一个元素
+          // 声明item为引用，则不会进行复制操作，而是直接将 item 绑定到队列中的第一个元素上。这样可以避免不必要的复制，提高代码的效率和性能。
           auto &item = input_queue_.front();
           if (item.pro)
+            // pro 作为 Item 结构体的成员变量，通过箭头运算符 -> 来访问 std::promise 对象的成员函数 set_value()。
+            // 通过调用 set_value() 方法，可以将一个 Result 类型的值设置给 std::promise 对象，以供其他地方使用 std::future 来获取这个值。
             item.pro->set_value(Result());
+          // 从 input_queue_（输入队列）中移除队列的第一个元素
+          // pop() 是队列（或者称为先进先出队列）的一个成员函数，它的作用是将队列的第一个元素移除。
+          // 目的是在 stop() 函数中清空输入队列，以确保在停止之前没有未处理的输入。
+          // 通过连续调用 pop() 方法，将队列中的元素一个一个地移除，直到队列为空。
           input_queue_.pop();
         }
       };
 
       if (worker_)
       {
+        // 调用 join() 方法来等待 worker_ 所代表的工作线程完成
+        // join() 方法会使当前线程阻塞，直到被调用的线程完成其执行。这样可以确保在继续执行后续代码之前，工作线程已经完成了任务。
         worker_->join();
+        // 使用 reset() 方法将 worker_ 重置为空指针。
+        // reset() 方法会释放 worker_ 所持有的资源，并将其重置为空指针。这样可以清理和重置工作线程对象，以便在后续的代码中重新使用或销毁。
         worker_.reset();
       }
     }

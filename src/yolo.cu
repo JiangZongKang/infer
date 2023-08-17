@@ -194,9 +194,11 @@ static __global__ void fast_nms_kernel(float *bboxes, int MAX_IMAGE_BOXES, float
   float *pcurrent = bboxes + 1 + position * NUM_BOX_ELEMENT;
   for (int i = 0; i < count; ++i) {
     float *pitem = bboxes + 1 + i * NUM_BOX_ELEMENT;
+    // continue是保留当前目标框
     if (i == position || pcurrent[5] != pitem[5]) continue;
 
     if (pitem[4] >= pcurrent[4]) {
+      // 对于相同置信度的框保留索引较大的目标框，因为表明是后出现的目标框，更有可能是真实目标而非重复框
       if (pitem[4] == pcurrent[4] && i < position) continue;
 
       float iou = box_iou(pcurrent[0], pcurrent[1], pcurrent[2], pcurrent[3], pitem[0], pitem[1],
