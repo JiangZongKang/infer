@@ -3,7 +3,9 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/src/**"
+                "${workspaceFolder}/src/**",
+                "/usr/local/cuda/include/**",
+                "/usr/include/opencv4/**"
                 // "/root/.kiwi/lib/opencv4.2/include/**",
                 // "/root/.kiwi/lib/cuda10.2/include/**",
                 // "/root/.kiwi/lib/tensorRT8016cuda102cudnn8/include/**",
@@ -17,7 +19,9 @@
             "configurationProvider": "ms-vscode.makefile-tools",
             "browse": {
                 "path": [
-                    "${workspaceFolder}/src/**"
+                    "${workspaceFolder}/src/**",
+                    "/usr/local/cuda/include/**",
+                    "/usr/include/opencv4/**"
                     // "/root/.kiwi/lib/opencv4.2/include/**",
                     // "/root/.kiwi/lib/cuda10.2/include/**",
                     // "/root/.kiwi/lib/tensorRT8016cuda102cudnn8/include/**",

@@ -4,7 +4,7 @@
     "python.languageServer": "Jedi",
     "files.associations": {
         "*.cpp": "cpp",
-        "*.cu": "cpp",
+        // "*.cu": "cpp",
         "*.cuh": "cpp",
         "unordered_map": "cpp",
         "chrono": "cpp",
@@ -93,5 +93,7 @@
         "__tuple": "cpp",
         "*.inc": "cpp",
         "memory_resource": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.errorSquigglesAutoRevert": true
 }

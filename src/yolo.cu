@@ -1,5 +1,6 @@
 #include "infer.hpp"
 #include "yolo.hpp"
+#include <cuda_runtime.h>
 
 namespace yolo {
 
@@ -226,6 +227,7 @@ static void decode_kernel_invoker(float *predict, int num_bboxes, int num_classe
   auto grid = grid_dims(num_bboxes);
   auto block = block_dims(num_bboxes);
 
+  // 红色波浪线报的不是checkKernel的错误，而是<<<>>>识别不出来
   if (type == Type::V8 || type == Type::V8Seg) {
     checkKernel(decode_kernel_v8<<<grid, block, 0, stream>>>(
         predict, num_bboxes, num_classes, output_cdim, confidence_threshold, invert_affine_matrix,
